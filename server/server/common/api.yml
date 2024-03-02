@@ -1,0 +1,164 @@
+openapi: 3.0.0
+info:
+  title: Blog API
+  description: API for managing blogs and posts
+  version: 1.0.0
+servers:
+  - url: http://localhost:3000
+paths:
+  /api/blogs:
+    get:
+      summary: Get all blogs
+      responses:
+        '200':
+          description: A list of blogs
+    post:
+      summary: Create a new blog
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BlogInput'
+      responses:
+        '201':
+          description: Blog created successfully
+        '400':
+          description: Invalid request body
+  /api/blogs/{blogId}:
+    get:
+      summary: Get a specific blog by ID
+      parameters:
+        - in: path
+          name: blogId
+          required: true
+          schema:
+            type: string
+          description: ID of the blog to get
+      responses:
+        '200':
+          description: A blog object
+        '404':
+          description: Blog not found
+    put:
+      summary: Update a blog
+      parameters:
+        - in: path
+          name: blogId
+          required: true
+          schema:
+            type: string
+          description: ID of the blog to update
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BlogInput'
+      responses:
+        '200':
+          description: Blog updated successfully
+        '400':
+          description: Invalid request body
+        '404':
+          description: Blog not found
+    delete:
+      summary: Delete a blog
+      parameters:
+        - in: path
+          name: blogId
+          required: true
+          schema:
+            type: string
+          description: ID of the blog to delete
+      responses:
+        '204':
+          description: Blog deleted successfully
+        '404':
+          description: Blog not found
+  /api/blogs/{blogId}/posts:
+    get:
+      summary: Get all posts of a specific blog
+      parameters:
+        - in: path
+          name: blogId
+          required: true
+          schema:
+            type: string
+          description: ID of the blog
+      responses:
+        '200':
+          description: A list of posts
+        '404':
+          description: Blog not found
+  /api/blogs/{blogId}/posts/{postId}:
+    put:
+      summary: Update a post
+      parameters:
+        - in: path
+          name: blogId
+          required: true
+          schema:
+            type: string
+          description: ID of the blog containing the post
+        - in: path
+          name: postId
+          required: true
+          schema:
+            type: string
+          description: ID of the post to update
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Post'
+      responses:
+        '200':
+          description: Post updated successfully
+        '400':
+          description: Invalid request body
+        '404':
+          description: Blog or post not found
+    delete:
+      summary: Delete a post
+      parameters:
+        - in: path
+          name: blogId
+          required: true
+          schema:
+            type: string
+          description: ID of the blog containing the post
+        - in: path
+          name: postId
+          required: true
+          schema:
+            type: string
+          description: ID of the post to delete
+      responses:
+        '204':
+          description: Post deleted successfully
+        '404':
+          description: Blog or post not found
+components:
+  schemas:
+    BlogInput:
+      type: object
+      properties:
+        title:
+          type: string
+          description: Title of the blog
+    Post:
+      type: object
+      properties:
+        title:
+          type: string
+          description: Title of the post
+        content:
+          type: string
+          description: Content of the post
+        userId:
+          type: string
+          description: ID of the user who created the post
+security:
+  - JWT: []
